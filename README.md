@@ -1,6 +1,6 @@
 # Node.js Updater
 
-The Node.js Updater is a command-line tool that checks the installed version of Node.js and compares it with the latest available version. If the installed version is not up to date, the program offers an option to update Node.js. 😈
+The Node.js Updater is a **win64** command-line tool that checks the installed version of Node.js and compares it with the latest available version. If the installed version is not up to date, the program offers an option to update Node.js. 😈
 
 ***Note: This tool does not use NVM (Node Version Manager). 👻***
 
@@ -23,6 +23,7 @@ Run the following command to start the program:
 - `language` (optional): an argument specifying the language of the program. Available options: `en` (English), `uk` (Ukrainian). The default language is English.
 
 The program checks the installed version of Node.js and compares it with the latest available version. If the installed version is not up to date, the program prompts the user to update Node.js. After updating or if the installed version is already up to date, the program informs the user about the Node.js version status.
+**Note: this is win64 version.**
 
 ## Examples
 
