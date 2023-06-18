@@ -29,7 +29,6 @@ const messages = {
     },
 };
 
-const writeFileAsync = promisify(fs.writeFile);
 const unlinkFileAsync = promisify(fs.unlink);
 
 const getInstalledNodeVersion = () => {
