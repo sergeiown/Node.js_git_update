@@ -4,15 +4,6 @@ The Node.js Updater is a command-line tool that checks the installed version of 
 
 ***Note: This tool does not use NVM (Node Version Manager). 👻***
 
-## Installation
-
-1. Clone the repository or download the program files.
-2. Open a terminal or command prompt in the program directory.
-3. Run the following command to install the dependencies:
-
-```npm install```
-
-
 ## Dependencies
 
 This program utilizes the following dependencies:
