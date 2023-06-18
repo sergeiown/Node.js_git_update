@@ -1,3 +1,30 @@
+const readline = require('readline');
+
+const messages = {
+    en: {
+        installedVersion: 'Installed Node.js version:',
+        latestVersion: 'Latest available Node.js version:',
+        updatePrompt: 'Do you want to update Node.js? (yes/no): ',
+        updating: 'Updating Node.js...',
+        updateError: 'Error updating Node.js:',
+        updateSuccess: 'Node.js updated successfully.',
+        upToDate: 'Node.js version is up to date. No update needed.',
+        languageNotSupported:
+            'Language not supported. Please run the program with "uk" as an argument for Ukrainian language.',
+    },
+    uk: {
+        installedVersion: 'Встановлена версія Node.js:',
+        latestVersion: 'Остання доступна версія Node.js:',
+        updatePrompt: 'Бажаєте оновити Node.js? (так/ні): ',
+        updating: 'Оновлення Node.js...',
+        updateError: 'Помилка під час оновлення Node.js:',
+        updateSuccess: 'Node.js оновлено успішно.',
+        upToDate: 'Версія Node.js актуальна. Оновлення не потрібне.',
+        languageNotSupported:
+            'Мова не підтримується. Будь ласка, запустіть програму з змінною середовища LANGUAGE=uk для української мови.',
+    },
+};
+
 const getInstalledNodeVersion = () => {
     return process.version;
 };
@@ -14,16 +41,47 @@ const getLatestNodeVersion = async () => {
 
 const compareVersions = async () => {
     const installedVersion = getInstalledNodeVersion();
-    console.log('Встановлена версія Node.js:', installedVersion);
+    console.log(messages[language].installedVersion, installedVersion);
 
     const latestVersion = await getLatestNodeVersion();
-    console.log('Остання доступна версія Node.js:', latestVersion);
+    console.log(messages[language].latestVersion, latestVersion);
 
     if (latestVersion && installedVersion !== latestVersion) {
-        console.log('Увага: Є нова версія Node.js, рекомендується оновити.');
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        rl.question(messages[language].updatePrompt, async (answer) => {
+            if (answer.toLowerCase() === 'так' || answer.toLowerCase() === 'yes') {
+                try {
+                    const { exec } = require('child_process');
+                    console.log(messages[language].updating);
+                    exec('npm install -g node', (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(messages[language].updateError, error);
+                        } else {
+                            console.log(messages[language].updateSuccess);
+                        }
+                    });
+                } catch (error) {
+                    console.error(messages[language].updateError, error);
+                }
+            } else {
+                console.log(messages[language].upToDate);
+            }
+
+            rl.close();
+        });
     } else {
-        console.log('Версія Node.js актуальна. Оновлення не потрібне.');
+        console.log(messages[language].upToDate);
     }
 };
 
-compareVersions();
+const language = process.argv[2] || 'en';
+
+if (language === 'uk' || language === 'en') {
+    compareVersions();
+} else {
+    console.log(messages.en.languageNotSupported);
+}
