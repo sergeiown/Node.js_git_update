@@ -4,7 +4,7 @@ const messages = {
     en: {
         installedVersion: 'Installed Node.js version:',
         latestVersion: 'Latest available Node.js version:',
-        updatePrompt: 'Do you want to update Node.js? (yes/no): ',
+        updatePrompt: 'Do you want to update Node.js? (y/n): ',
         updating: 'Updating Node.js...',
         updateError: 'Error updating Node.js:',
         updateSuccess: 'Node.js updated successfully.',
@@ -15,7 +15,7 @@ const messages = {
     uk: {
         installedVersion: 'Встановлена версія Node.js:',
         latestVersion: 'Остання доступна версія Node.js:',
-        updatePrompt: 'Бажаєте оновити Node.js? (так/ні): ',
+        updatePrompt: 'Бажаєте оновити Node.js? (т/н): ',
         updating: 'Оновлення Node.js...',
         updateError: 'Помилка під час оновлення Node.js:',
         updateSuccess: 'Node.js оновлено успішно.',
@@ -53,7 +53,7 @@ const compareVersions = async () => {
         });
 
         rl.question(messages[language].updatePrompt, async (answer) => {
-            if (answer.toLowerCase() === 'так' || answer.toLowerCase() === 'yes') {
+            if (answer.toLowerCase() === 'y') {
                 try {
                     const { exec } = require('child_process');
                     console.log(messages[language].updating);
