@@ -1,5 +1,8 @@
-const readline = require('readline');
+const fs = require('fs');
+const { exec } = require('child_process');
+const { promisify } = require('util');
 const clear = require('clear');
+const axios = require('axios');
 
 const messages = {
     en: {
@@ -26,6 +29,9 @@ const messages = {
     },
 };
 
+const writeFileAsync = promisify(fs.writeFile);
+const unlinkFileAsync = promisify(fs.unlink);
+
 const getInstalledNodeVersion = () => {
     return process.version;
 };
@@ -36,7 +42,62 @@ const getLatestNodeVersion = async () => {
         const latestVersionNumber = await latestVersionModule.default('node');
         return latestVersionNumber;
     } catch (error) {
-        console.error('Сталася помилка при отриманні останньої версії Node.js:', error);
+        console.error('Error getting latest Node.js version:', error);
+    }
+};
+
+const downloadFile = async (url, filePath) => {
+    try {
+        const response = await axios.get(url, { responseType: 'stream' });
+        const fileStream = fs.createWriteStream(filePath);
+
+        response.data.pipe(fileStream);
+
+        return new Promise((resolve, reject) => {
+            fileStream.on('finish', resolve);
+            fileStream.on('error', reject);
+        });
+    } catch (error) {
+        throw new Error('Error downloading file:', error);
+    }
+};
+
+const executeInstaller = async (filePath) => {
+    return new Promise((resolve, reject) => {
+        const installer = exec(`start /wait ${filePath}`, (error, stdout, stderr) => {
+            if (error) {
+                reject(new Error(`Error executing installer: ${error}`));
+            } else {
+                resolve();
+            }
+        });
+
+        installer.on('exit', (code) => {
+            if (code !== 0) {
+                reject(new Error(`Installer exited with code ${code}`));
+            }
+        });
+    });
+};
+
+const updateNode = async () => {
+    try {
+        const latestVersion = await getLatestNodeVersion();
+        if (latestVersion) {
+            console.log(messages[language].updating);
+
+            const installerFilePath = 'node-installer.msi';
+            const installerUrl = `https://nodejs.org/dist/v${latestVersion}/node-v${latestVersion}-x64.msi`;
+
+            await downloadFile(installerUrl, installerFilePath);
+            await executeInstaller(installerFilePath);
+
+            console.log(messages[language].updateSuccess);
+
+            await unlinkFileAsync(installerFilePath);
+        }
+    } catch (error) {
+        console.error(messages[language].updateError, error);
     }
 };
 
@@ -48,6 +109,7 @@ const compareVersions = async () => {
     console.log(messages[language].latestVersion, latestVersion);
 
     if (latestVersion && installedVersion !== latestVersion) {
+        const readline = require('readline');
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
@@ -55,19 +117,7 @@ const compareVersions = async () => {
 
         rl.question(messages[language].updatePrompt, async (answer) => {
             if (answer.toLowerCase() === 'y') {
-                try {
-                    const { exec } = require('child_process');
-                    console.log(messages[language].updating);
-                    exec('npm install -g node', (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(messages[language].updateError, error);
-                        } else {
-                            console.log(messages[language].updateSuccess);
-                        }
-                    });
-                } catch (error) {
-                    console.error(messages[language].updateError, error);
-                }
+                await updateNode();
             } else {
                 console.log(messages[language].upToDate);
             }
