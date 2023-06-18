@@ -1,4 +1,5 @@
 const readline = require('readline');
+const clear = require('clear');
 
 const messages = {
     en: {
@@ -15,7 +16,7 @@ const messages = {
     uk: {
         installedVersion: 'Встановлена версія Node.js:',
         latestVersion: 'Остання доступна версія Node.js:',
-        updatePrompt: 'Бажаєте оновити Node.js? (т/н): ',
+        updatePrompt: 'Бажаєте оновити Node.js? (y/n): ',
         updating: 'Оновлення Node.js...',
         updateError: 'Помилка під час оновлення Node.js:',
         updateSuccess: 'Node.js оновлено успішно.',
@@ -81,6 +82,7 @@ const compareVersions = async () => {
 const language = process.argv[2] || 'en';
 
 if (language === 'uk' || language === 'en') {
+    clear();
     compareVersions();
 } else {
     console.log(messages.en.languageNotSupported);
