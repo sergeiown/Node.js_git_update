@@ -12,7 +12,7 @@ const messages = {
         updating: 'Updating Node.js...',
         updateError: 'Error updating Node.js:',
         updateSuccess: 'Node.js updated successfully.',
-        upToDate: 'Node.js version is up to date. No update needed.',
+        upToDate: 'The Node.js version is up to date or no update is required',
         languageNotSupported:
             'Language not supported. Please run the program with "uk" as an argument for Ukrainian language.',
     },
@@ -23,7 +23,7 @@ const messages = {
         updating: 'Оновлення Node.js...',
         updateError: 'Помилка під час оновлення Node.js:',
         updateSuccess: 'Node.js оновлено успішно.',
-        upToDate: 'Версія Node.js актуальна. Оновлення не потрібне.',
+        upToDate: 'Версія Node.js актуальна або оновлення не потрібне.',
         languageNotSupported:
             'Мова не підтримується. Будь ласка, запустіть програму з змінною середовища LANGUAGE=uk для української мови.',
     },
