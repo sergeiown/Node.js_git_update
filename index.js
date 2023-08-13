@@ -2,7 +2,7 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const clear = require('clear');
-const axios = require('axios');
+const https = require('https');
 
 const messages = {
     en: {
@@ -46,19 +46,22 @@ const getLatestNodeVersion = async () => {
 };
 
 const downloadFile = async (url, filePath) => {
-    try {
-        const response = await axios.get(url, { responseType: 'stream' });
+    return new Promise((resolve, reject) => {
         const fileStream = fs.createWriteStream(filePath);
 
-        response.data.pipe(fileStream);
+        https.get(url, (response) => {
+            response.pipe(fileStream);
 
-        return new Promise((resolve, reject) => {
-            fileStream.on('finish', resolve);
-            fileStream.on('error', reject);
+            fileStream.on('finish', () => {
+                fileStream.close();
+                resolve();
+            });
+
+            fileStream.on('error', (error) => {
+                reject(new Error('Error downloading file:', error));
+            });
         });
-    } catch (error) {
-        throw new Error('Error downloading file:', error);
-    }
+    });
 };
 
 const executeInstaller = async (filePath) => {

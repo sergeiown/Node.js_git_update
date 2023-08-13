@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "axios": "^1.4.0",
     "clear": "^0.1.0",
     "latest-version": "^7.0.0"
   }
