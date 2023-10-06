@@ -143,7 +143,7 @@ const detectLanguage = () => {
         } else {
             console.log(output);
             console.log(messages.en.languageNotSupported);
-            process.exit(1);
+            return 'en'; // English locale
         }
     } catch (error) {
         console.error('Error detecting system language:', error);
