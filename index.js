@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const clear = require('clear');
 const https = require('https');
-const osLocale = require('os-locale');
+const { execSync } = require('child_process');
 
 const messages = {
     en: {
@@ -104,7 +104,7 @@ const updateNode = async () => {
     }
 };
 
-const compareVersions = async () => {
+const compareVersions = async (language) => {
     const installedVersion = getInstalledNodeVersion();
     console.log(messages[language].installedVersion, installedVersion);
 
@@ -132,20 +132,27 @@ const compareVersions = async () => {
     }
 };
 
-/* const language = process.argv[2] || 'en';
+const detectLanguage = () => {
+    try {
+        const result = execSync('chcp');
+        const output = result.toString('utf-8');
+        if (output.includes('1251') || output.includes('1252') || output.includes('866')) {
+            return 'uk'; // Ukrainian locale
+        } else if (output.includes('65001')) {
+            return 'en'; // English locale
+        } else {
+            console.log(output);
+            console.log(messages.en.languageNotSupported);
+            process.exit(1);
+        }
+    } catch (error) {
+        console.error('Error detecting system language:', error);
+        process.exit(1);
+    }
+};
 
-if (language === 'uk' || language === 'en') {
+(async () => {
+    const language = detectLanguage();
     clear();
-    compareVersions();
-} else {
-    console.log(messages.en.languageNotSupported);
-} */
-
-const language = osLocale.sync();
-
-if (language === 'uk' || language === 'en') {
-    clear();
-    compareVersions();
-} else {
-    console.log(messages.en.languageNotSupported);
-}
+    compareVersions(language);
+})();
