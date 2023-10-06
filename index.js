@@ -3,6 +3,7 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const clear = require('clear');
 const https = require('https');
+const osLocale = require('os-locale');
 
 const messages = {
     en: {
@@ -131,7 +132,16 @@ const compareVersions = async () => {
     }
 };
 
-const language = process.argv[2] || 'en';
+/* const language = process.argv[2] || 'en';
+
+if (language === 'uk' || language === 'en') {
+    clear();
+    compareVersions();
+} else {
+    console.log(messages.en.languageNotSupported);
+} */
+
+const language = osLocale.sync();
 
 if (language === 'uk' || language === 'en') {
     clear();
