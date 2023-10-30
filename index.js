@@ -10,7 +10,8 @@ const messages = {
         installedVersion: 'Installed Node.js version:',
         latestVersion: 'Latest available Node.js version:',
         updatePrompt: 'Do you want to update Node.js? (y/n): ',
-        updating: 'Updating Node.js...',
+        updating:
+            'For the script to work correctly, select the setup suggestion: "Don\'t cose applications".\nUpdating Node.js...',
         updateError: 'Error updating Node.js:',
         updateSuccess: 'Node.js updated successfully.',
         upToDate: 'The Node.js version is up to date or no update is required',
@@ -21,7 +22,8 @@ const messages = {
         installedVersion: 'Встановлена версія Node.js:',
         latestVersion: 'Остання доступна версія Node.js:',
         updatePrompt: 'Бажаєте оновити Node.js? (y/n): ',
-        updating: 'Оновлення Node.js...',
+        updating:
+            'Для коректної роботи скрипта виберіть пропозицію setup: "Do not cose applications".\nОновлення Node.js...',
         updateError: 'Помилка під час оновлення Node.js:',
         updateSuccess: 'Node.js оновлено успішно.',
         upToDate: 'Версія Node.js актуальна або оновлення не потрібне.',
@@ -83,7 +85,8 @@ const executeInstaller = async (filePath) => {
     });
 };
 
-const updateNode = async () => {
+const updateNode = async (language) => {
+    // Add language as a parameter
     try {
         const latestVersion = await getLatestNodeVersion();
         if (latestVersion) {
@@ -120,7 +123,7 @@ const compareVersions = async (language) => {
 
         rl.question(messages[language].updatePrompt, async (answer) => {
             if (answer.toLowerCase() === 'y') {
-                await updateNode();
+                await updateNode(language); // Pass language to updateNode
             } else {
                 console.log(messages[language].upToDate);
             }
