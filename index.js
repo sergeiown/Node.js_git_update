@@ -86,7 +86,6 @@ const executeInstaller = async (filePath) => {
 };
 
 const updateNode = async (language) => {
-    // Add language as a parameter
     try {
         const latestVersion = await getLatestNodeVersion();
         if (latestVersion) {
@@ -123,7 +122,7 @@ const compareVersions = async (language) => {
 
         rl.question(messages[language].updatePrompt, async (answer) => {
             if (answer.toLowerCase() === 'y') {
-                await updateNode(language); // Pass language to updateNode
+                await updateNode(language);
             } else {
                 console.log(messages[language].upToDate);
             }
