@@ -8,6 +8,7 @@ const messages = require('./modules/messages');
 const detectLanguage = require('./modules/languageDetector.js');
 const downloadFile = require('./modules/fileDownloader.js');
 const installerExecutor = require('./modules/installerExecutor.js');
+const updateNode = require('./modules/nodeUpdater');
 
 const unlinkFileAsync = promisify(fs.unlink);
 
@@ -22,27 +23,6 @@ const getLatestNodeVersion = async () => {
         return latestVersionNumber;
     } catch (error) {
         console.error('Error getting latest Node.js version:', error);
-    }
-};
-
-const updateNode = async (language) => {
-    try {
-        const latestVersion = await getLatestNodeVersion();
-        if (latestVersion) {
-            console.log(messages[language].updating);
-
-            const installerFilePath = 'node-installer.msi';
-            const installerUrl = `https://nodejs.org/dist/v${latestVersion}/node-v${latestVersion}-x64.msi`;
-
-            await downloadFile(installerUrl, installerFilePath);
-            await installerExecutor(installerFilePath);
-
-            console.log(messages[language].updateSuccess);
-
-            await unlinkFileAsync(installerFilePath);
-        }
-    } catch (error) {
-        console.error(messages[language].updateError, error);
     }
 };
 
