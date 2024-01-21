@@ -3,7 +3,6 @@ const { promisify } = require('util');
 const messages = require('./messages');
 const downloadFile = require('./fileDownloader');
 const installerExecutor = require('./installerExecutor');
-const detectLanguage = require('./languageDetector.js');
 
 const unlinkFileAsync = promisify(fs.unlink);
 
