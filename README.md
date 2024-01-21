@@ -6,13 +6,7 @@ The Node.js Updater is a **win64** command-line tool that checks the installed v
 
 ## Dependencies
 
-This program utilizes the following dependencies:
-
-- axios: a library for making HTTP requests.
-- clear: a library for clearing the console output.
-- latest-version: a library for getting the latest available version of Node.js.
-
-All dependencies are automatically installed when running the `npm install` command.
+![image](https://github.com/sergeiown/Node.js_non_nvm_update/assets/112722061/60a66263-b0cd-4143-a618-855765648d5d)
 
 ## Usage
 
