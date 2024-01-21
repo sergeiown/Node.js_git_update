@@ -10,6 +10,7 @@ const getInstalledNodeVersion = () => {
     return process.version;
 };
 
+// Asynchronous function to get the latest Node.js version using 'latest-version' module
 const getLatestNodeVersion = async () => {
     try {
         const latestVersionModule = await import('latest-version');
@@ -20,6 +21,7 @@ const getLatestNodeVersion = async () => {
     }
 };
 
+// Function to compare installed and latest Node.js versions
 const compareVersions = async (language) => {
     const installedVersion = getInstalledNodeVersion();
     console.log(messages[language].installedVersion, installedVersion);
@@ -34,6 +36,7 @@ const compareVersions = async (language) => {
             output: process.stdout,
         });
 
+        // Ask the user if they want to update Node.js
         rl.question(messages[language].updatePrompt, async (answer) => {
             if (answer.toLowerCase() === 'y') {
                 await updateNode(language);
@@ -48,6 +51,7 @@ const compareVersions = async (language) => {
     }
 };
 
+// Function to update Node.js to the latest version
 const updateNode = async (language) => {
     try {
         const latestVersion = await getLatestNodeVersion();
@@ -57,11 +61,14 @@ const updateNode = async (language) => {
             const installerFilePath = 'node-installer.msi';
             const installerUrl = `https://nodejs.org/dist/v${latestVersion}/node-v${latestVersion}-x64.msi`;
 
+            // Download the latest Node.js installer
             await downloadFile(installerUrl, installerFilePath);
+            // Execute the installer
             await installerExecutor(installerFilePath);
 
             console.log(messages[language].updateSuccess);
 
+            // Remove the temporary installer file
             await unlinkFileAsync(installerFilePath);
         }
     } catch (error) {
