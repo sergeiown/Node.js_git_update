@@ -3,7 +3,7 @@ const detectLanguage = require('./modules/languageDetector.js');
 const { compareVersions } = require('./modules/nodeUpdater');
 
 (async () => {
-    const language = detectLanguage();
     clear();
+    const language = detectLanguage();
     compareVersions(language);
 })();

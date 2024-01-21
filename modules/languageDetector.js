@@ -3,7 +3,9 @@ const { execSync } = require('child_process');
 const detectLanguage = () => {
     try {
         const result = execSync('chcp');
+        // Getting the result as a Buffer and converting to a string
         const output = result.toString('utf-8');
+
         if (output.includes('1251') || output.includes('1252') || output.includes('866')) {
             return 'uk'; // Ukrainian locale
         } else if (output.includes('65001')) {
