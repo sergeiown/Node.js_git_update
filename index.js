@@ -7,6 +7,7 @@ const { execSync } = require('child_process');
 const messages = require('./modules/messages');
 const detectLanguage = require('./modules/languageDetector.js');
 const downloadFile = require('./modules/fileDownloader.js');
+const installerExecutor = require('./modules/installerExecutor.js');
 
 const unlinkFileAsync = promisify(fs.unlink);
 
@@ -24,24 +25,6 @@ const getLatestNodeVersion = async () => {
     }
 };
 
-const executeInstaller = async (filePath) => {
-    return new Promise((resolve, reject) => {
-        const installer = exec(`start /wait ${filePath}`, (error, stdout, stderr) => {
-            if (error) {
-                reject(new Error(`Error executing installer: ${error}`));
-            } else {
-                resolve();
-            }
-        });
-
-        installer.on('exit', (code) => {
-            if (code !== 0) {
-                reject(new Error(`Installer exited with code ${code}`));
-            }
-        });
-    });
-};
-
 const updateNode = async (language) => {
     try {
         const latestVersion = await getLatestNodeVersion();
@@ -52,7 +35,7 @@ const updateNode = async (language) => {
             const installerUrl = `https://nodejs.org/dist/v${latestVersion}/node-v${latestVersion}-x64.msi`;
 
             await downloadFile(installerUrl, installerFilePath);
-            await executeInstaller(installerFilePath);
+            await installerExecutor(installerFilePath);
 
             console.log(messages[language].updateSuccess);
 
