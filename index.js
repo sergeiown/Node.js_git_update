@@ -6,6 +6,7 @@ const https = require('https');
 const { execSync } = require('child_process');
 const messages = require('./modules/messages');
 const detectLanguage = require('./modules/languageDetector.js');
+const downloadFile = require('./modules/fileDownloader.js');
 
 const unlinkFileAsync = promisify(fs.unlink);
 
@@ -21,25 +22,6 @@ const getLatestNodeVersion = async () => {
     } catch (error) {
         console.error('Error getting latest Node.js version:', error);
     }
-};
-
-const downloadFile = async (url, filePath) => {
-    return new Promise((resolve, reject) => {
-        const fileStream = fs.createWriteStream(filePath);
-
-        https.get(url, (response) => {
-            response.pipe(fileStream);
-
-            fileStream.on('finish', () => {
-                fileStream.close();
-                resolve();
-            });
-
-            fileStream.on('error', (error) => {
-                reject(new Error('Error downloading file:', error));
-            });
-        });
-    });
 };
 
 const executeInstaller = async (filePath) => {
