@@ -1,6 +1,53 @@
+const fs = require('fs');
+const { promisify } = require('util');
 const messages = require('./messages');
 const downloadFile = require('./fileDownloader');
 const installerExecutor = require('./installerExecutor');
+const detectLanguage = require('./languageDetector.js');
+
+const unlinkFileAsync = promisify(fs.unlink);
+
+const getInstalledNodeVersion = () => {
+    return process.version;
+};
+
+const getLatestNodeVersion = async () => {
+    try {
+        const latestVersionModule = await import('latest-version');
+        const latestVersionNumber = await latestVersionModule.default('node');
+        return latestVersionNumber;
+    } catch (error) {
+        console.error('Error getting latest Node.js version:', error);
+    }
+};
+
+const compareVersions = async (language) => {
+    const installedVersion = getInstalledNodeVersion();
+    console.log(messages[language].installedVersion, installedVersion);
+
+    const latestVersion = await getLatestNodeVersion();
+    console.log(messages[language].latestVersion, latestVersion);
+
+    if (latestVersion && installedVersion !== latestVersion) {
+        const readline = require('readline');
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        rl.question(messages[language].updatePrompt, async (answer) => {
+            if (answer.toLowerCase() === 'y') {
+                await updateNode(language);
+            } else {
+                console.log(messages[language].upToDate);
+            }
+
+            rl.close();
+        });
+    } else {
+        console.log(messages[language].upToDate);
+    }
+};
 
 const updateNode = async (language) => {
     try {
@@ -23,4 +70,4 @@ const updateNode = async (language) => {
     }
 };
 
-module.exports = updateNode;
+module.exports = { getInstalledNodeVersion, getLatestNodeVersion, compareVersions, updateNode };
