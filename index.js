@@ -5,6 +5,7 @@ const clear = require('clear');
 const https = require('https');
 const { execSync } = require('child_process');
 const messages = require('./modules/messages');
+const detectLanguage = require('./modules/languageDetector.js');
 
 const unlinkFileAsync = promisify(fs.unlink);
 
@@ -105,25 +106,6 @@ const compareVersions = async (language) => {
         });
     } else {
         console.log(messages[language].upToDate);
-    }
-};
-
-const detectLanguage = () => {
-    try {
-        const result = execSync('chcp');
-        const output = result.toString('utf-8');
-        if (output.includes('1251') || output.includes('1252') || output.includes('866')) {
-            return 'uk'; // Ukrainian locale
-        } else if (output.includes('65001')) {
-            return 'en'; // English locale
-        } else {
-            console.log(output);
-            console.log(messages.en.languageNotSupported);
-            return 'en'; // English locale
-        }
-    } catch (error) {
-        console.error('Error detecting system language:', error);
-        process.exit(1);
     }
 };
 
